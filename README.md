@@ -4,8 +4,8 @@ Desert Hopper is a simple 2D dodging game made using **HTML5 Canvas, CSS and Jav
 Your goal is simple — **avoid all obstacles and survive as long as possible**.  
 The game becomes faster with time, so the challenge keeps increasing!
 
-![game_image1](./images/image.png)
-![game_image2](./images/image-1.png)
+![Game Screenshot 1](./images/start_image.png)
+![Game Screenshot 2](./images/end_image.png)
 
 ---
 
@@ -49,8 +49,8 @@ desert-hopper/
 │── GDD.md
 │── TESTING.md
 │── images/
-│   └── image.png
-│   └── image-1.png
+│   └── start_image.png
+│   └── end_image.png
 │── .gitignore
 ```
 
