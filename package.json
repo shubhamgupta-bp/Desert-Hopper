@@ -1,0 +1,15 @@
+{
+  "name": "desert-hopper",
+  "version": "1.0.0",
+  "description": "Desert Hopper Game",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server . -p 6060 -c-1"
+  },
+  "keywords": [],
+  "author": "Shubham Gupta",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
