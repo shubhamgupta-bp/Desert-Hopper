@@ -1,120 +1,159 @@
-# Desert Hopper 🎮
+# 🌵 Desert Hopper – Full Stack 2D Endless Runner Game
 
-Desert Hopper is a simple 2D dodging game made using **HTML5 Canvas, CSS and JavaScript**.  
-Your goal is simple — **avoid all obstacles and survive as long as possible**.  
-The game becomes faster with time, so the challenge keeps increasing!
+Desert Hopper is a **full-stack browser-based 2D dodging game** built using:
 
-![Game Screenshot 1](./images/start_image.png)
-![Game Screenshot 2](./images/end_image.png)
+- 🎨 **HTML5 Canvas** (game rendering)
+- 🎮 **JavaScript** (game engine + UI)
+- 🔊 **Tone.js** (sound effects)
+- 🟧 **CSS + Tailwind** (UI design)
+- ⚙️ **Node.js (npm start)** for local hosting
+- 🖥️ **C# .NET Backend** (Save / Load / Delete game system)
 
----
-
-## 🚀 How to Run the Game
-
-Clone or download this repository and then follow these steps:
-
-### 1️. Open terminal inside the project folder
-cd desert-hopper
-
-### 2️. Install all required node modules  
-npm install
-
-### 3️. Start the local server
-npm start
-
-### 4️. Open your browser and play the game
-http://localhost:6060
+This project features **beautiful UI**, a **multi-page menu system**, and a **complete save-load-update-delete backend**.
 
 ---
 
-## 🎮 Game Controls
+# 🚀 Features
 
-##### `Jump` - Space / ↑ Up Arrow
-##### `Duck` - ↓ Down Arrow
-##### `Start Game` - Space
+### 🎮 Gameplay
+- Jump, Duck, Survive  
+- Dodge various obstacles:
+  - Cactus
+  - Rock
+  - Bird
+  - Log
+  - Tumbleweed
+  - Glider (sine-wave flying)
+- Increasing difficulty
+- Smooth physics
+- Parallax clouds
+- Polished desert color theme
+
+### 💾 Save System (Backend)
+- Save a game with any name  
+- Update an existing game  
+- Load saved games  
+- Delete saved games  
+- Fully backed by a C# API
+
+### 🧭 Multi-Page UI
+- Main Menu  
+- Play Page  
+- Load Game Page  
+- Save Page  
+- Delete Page  
+- How-To Page  
+- Crash Menu (Play Again / Save / Main Menu)
+
+### 🛠 Tech Used
+- HTML, CSS, JS  
+- TailwindCSS  
+- Node.js (live server)  
+- .NET Web API  
+- Dictionary-based InMemory storage  
+- Tone.js audio
 
 ---
 
 ## 📁 Folder Structure
 
 ```
-desert-hopper/
+project-root/
 │── index.html
+│── pages/
+│   ├── play.html
+│   ├── load.html
+│   ├── save.html
+│   ├── delete.html
+│   └── howto.html
+│── js/
+│   ├── ui.js
+│   └── game.js
 │── css/
 │   └── style.css
-│── js/
-│   └── game.js
-│── package.json
+│── Backend/
+│   ├── Controllers/GamesController.cs
+│   ├── Models/GameSave.cs
+│   ├── Services
+|   |   ├── GameService.cs
+|   |   └── IGameService.cs   
+│   ├── Program.cs
+|   ├── DesertHopperBackend.csproj
+│   └── Data/InMemoryGameStore.cs
+|
 │── README.md
-│── GDD.md
-│── TESTING.md
-│── images/
-│   └── start_image.png
-│   └── end_image.png
 │── .gitignore
+│── package.json
+│── package-lock.json
+│── GDD.md
+└── TESTING.md
 ```
 
----
+# How to Run
 
-## 🧠 What This Project Demonstrates
+### 1. Backend
 
-This project covers the main learning outcomes required for a simple 2D game development assignment:
+- Open backend folder → run:
+    - dotnet run
 
-- **Canvas API** – Drawing, animation, ground, player, clouds, obstacles.
-- **Data structures** – Arrays for obstacles & clouds, objects for player.
-- **Algorithms** – Collision detection, gravity, jumping, sine-wave motion, procedural obstacle generation.
-- **Functions** – All logic broken into clean, reusable functions.
-- **Git Version Control** – Use of Git properly.
-- **Game Documentation** – Includes GDD (Game Design Document) and Testing notes.
-- **Debugging Techniques** – Console logs, bounding box checks.
-- **LocalStorage** – Automatically saves high score.
+- Backend will start at http://localhost:5000
 
----
+### 2. Frontend
 
-## 📜 Game Description
+-  When you clone the repo go to the root folder that is Desert-Hopper and run:
+    - npm install
+    - npm run
 
-Desert Hopper is a **Dodger-type** endless runner game.
+- Navigate to http://localhost:6060
 
-You control a small hopper and must avoid:
-
-- Cactus  
-- Rocks  
-- Birds  
-- Logs  
-- Tumbleweeds  
-- Gliders (with sine-wave flying motion)
-
-Each obstacle you avoid gives you **+1 score**.  
-Your best score is saved automatically using browser storage.
-
-The game also includes:
-
-- A start menu  
-- A game over screen  
-- Smooth jump physics  
-- Ducking mechanic  
-- Sound effects using Tone.js  
-- Increasing speed for difficulty progression
 
 ---
 
-## ❤️ About This Project
+# 🖱 Controls
 
-This project was created as a part of a **2D Game Development assignment**.  
-The aim was to create a working browser-based game using:
-
-- HTML  
-- CSS  
-- JavaScript  
-- Canvas API  
-- Node.js for running locally
-
-No external game engines or frameworks were used.
+| Action | Keys |
+|--------|------|
+| Jump | Space / ↑ |
+| Duck | ↓ |
+| Start Game | Space |
+| Save Game | Button |
+| Load Game | Button |
 
 ---
 
-## 🙌 Enjoy the Game!
+# 📡 API Endpoints (Backend)
 
-Suggestions for upgrades include skins, power-ups, menus, animations and more.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/games | Get all saves |
+| GET | /api/games/{name} | Get a specific save |
+| POST | /api/games/save | Create or update a save |
+| DELETE | /api/games/{name} | Delete a save |
 
-Happy Coding & Happy Gaming! 🙂
+---
+
+# 🧠 Learning Outcomes
+
+This project demonstrates:
+
+- Game physics programming  
+- Frontend-backend integration  
+- Procedural generation  
+- Collision detection  
+- Multi-page routing  
+- UI/UX design  
+- LocalStorage usage  
+- Testing & debugging  
+- Clean code + architecture  
+- Git & version control  
+
+---
+
+# 📝 Documentation Included
+- **GDD.md** → Game Design Document  
+- **TESTING.md** → Full Testing Report  
+- **README.md** → Project Overview  
+
+---
+
+Happy Hopping! 🌵🎮
