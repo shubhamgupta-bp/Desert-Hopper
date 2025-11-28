@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Delete Saved Game</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body class="page-bg">
+
+  <div class="page-shell">
+    <header>
+      <button class="back-link" onclick="goTo('../index.html')">← Back</button>
+      <h2 class="page-title" style="color:#B91C1C">Delete Saved Game</h2>
+    </header>
+
+    <section class="list-shell">
+      <ul id="delete-list" class="saves-list"></ul>
+    </section>
+
+    <footer>
+      <button class="btn neutral" onclick="goTo('../index.html')">Back to Main Menu</button>
+    </footer>
+  </div>
+
+  <script src="../js/ui.js"></script>
+  <script>loadDeleteList();</script>
+
+</body>
+</html>

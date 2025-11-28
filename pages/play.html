@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Play — Desert Hopper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body class="page-bg">
+
+  <div class="play-layout">
+
+    <div class="game-card">
+      <canvas id="gameCanvas" width="900" height="200"></canvas>
+
+      <!-- Start Panel -->
+      <div id="start-panel" class="overlay-panel">
+        <h2 class="panel-title">Ready?</h2>
+
+        <div class="panel-actions">
+          <button class="btn primary" id="btn-start">Play</button>
+          <button class="btn neutral" onclick="goTo('../index.html')">Back</button>
+        </div>
+      </div>
+
+      <!-- Crash Menu -->
+      <div id="crash-menu" class="crash-overlay hidden">
+        <div class="crash-card">
+          <h3>You Crashed!</h3>
+          <p>Score: <span id="crash-score">0</span></p>
+
+          <div class="panel-actions">
+            <button class="btn primary" onclick="playAgain()">Play Again</button>
+            <button class="btn warn" onclick="goToSavePage()">Save Game</button>
+            <button class="btn neutral" onclick="goTo('../index.html')">Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="right-panel">
+      <div class="info-card">
+        <h4>Game Info</h4>
+        <p><strong>Saved:</strong> <span id="sidebar-saved">(none)</span></p>
+        <p><strong>Coins:</strong> <span id="sidebar-coins">0</span></p>
+        <p><strong>Obstacles Crossed:</strong> <span id="sidebar-obstacles">0</span></p>
+      </div>
+
+      <div class="controls-card">
+        <h4>Controls</h4>
+        <p>Jump: <kbd>Space</kbd> / <kbd>↑</kbd></p>
+        <p>Duck: <kbd>↓</kbd></p>
+      </div>
+    </aside>
+  </div>
+
+  <script src="../js/ui.js"></script>
+  <script src="../js/game.js"></script>
+
+  <script>
+    document.getElementById("btn-start").addEventListener("click", () => {
+      document.getElementById("start-panel").classList.add("hidden");
+      if (typeof initGame === "function") initGame();
+    });
+  </script>
+
+</body>
+</html>
