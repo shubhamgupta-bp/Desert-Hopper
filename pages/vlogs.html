@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dino Vlogs</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body class="page-bg">
+
+  <!-- Main Shell -->
+  <main class="dv-shell">
+
+    <!-- Internal Header (Back + User + Coins) -->
+    <div class="dv-inner-header">
+
+      <button onclick="goTo('../index.html')" class="btn neutral">
+        ← Main Menu
+      </button>
+
+      <div class="dv-user-panel">
+        <div class="dv-chip">
+          👤 <span id="vlog-username">-</span>
+        </div>
+        <div class="dv-chip">
+          🪙 <span id="vlog-coins">0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Title -->
+    <h2 class="dv-heading">Watch Exclusive Dino Vlogs</h2>
+    <p class="dv-sub">Use your coins to enjoy fun short Dino clips!</p>
+
+    <!-- Funny Dino Message -->
+    <p class="dv-warning">
+      🦖 Dino doesn’t believe in lifetime unlocks! Whenever you want to see what Dino is doing he demands FRESH SHINY COINS. It's Dino’s economy. No refunds. No negotiations. 😄
+    </p>
+
+    <!-- Video Grid -->
+    <section id="vlog-grid" class="dv-grid"></section>
+
+  </main>
+
+  <!-- Vlog Modal -->
+  <div id="vlog-modal" class="dv-modal hidden">
+    <div class="dv-modal-inner">
+      <h3 id="vlog-modal-title" class="dv-modal-title"></h3>
+
+      <div id="vlog-video-container" class="dv-video-container"></div>
+
+      <div class="dv-modal-actions">
+        <button class="btn neutral" onclick="closeVlogModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/ui.js"></script>
+  <script src="../js/vlogs.js"></script>
+  <script>
+    window.onload = initVlogsPage;
+  </script>
+
+</body>
+</html>
