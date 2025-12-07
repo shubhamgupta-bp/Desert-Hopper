@@ -272,7 +272,7 @@ Request:
 - cd Backend/
 - dotnet restore
 
-## 8.2. Apply Migrations
+## 8.2. Apply Migrations (Optional if want to create a new db)
 - cd Backend/
 - dotnet ef migrations add InitialCreate
 - dotnet ef database update
