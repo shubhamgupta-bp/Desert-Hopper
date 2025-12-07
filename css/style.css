@@ -372,3 +372,206 @@ body {
   color: #4b5563;
   margin-bottom: 0.8rem;
 }
+
+/* =========================================
+   Dino Vlogs – isolated styling (dv-*)
+   ========================================= */
+
+/* Main shell */
+.dv-shell {
+  max-width: 1100px;
+  margin: 40px auto 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 26px 26px 30px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+/* Internal header (Back button + user panel) */
+.dv-inner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dv-user-panel {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.dv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: #fef3c7;
+  border: 1px solid #facc15;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.dv-heading {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+
+.dv-sub {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+/* Funny warning text */
+.dv-warning {
+  margin: 10px 0 20px 0;
+  text-align: center;
+  background: #fff7d6;
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: 1px solid #facc15;
+  color: #92400e;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
+}
+
+/* Grid of vlog cards */
+.dv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.dv-card {
+  background: #fff7e6;
+  border-radius: 18px;
+  padding: 14px 14px 12px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.16s ease;
+}
+
+.dv-card:hover {
+  transform: translateY(-4px);
+}
+
+.dv-thumb {
+  height: 130px;
+  border-radius: 14px;
+  background: radial-gradient(circle at top, #fed7aa, #f97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dv-thumb-icon {
+  font-size: 2.4rem;
+  z-index: 1;
+}
+
+.dv-thumb-dunes {
+  position: absolute;
+  bottom: -12px;
+  left: -10px;
+  right: -10px;
+  height: 48px;
+  background: radial-gradient(circle at top, #facc15, #f97316);
+  opacity: 0.85;
+}
+
+.dv-tag {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b21a8;
+}
+
+.dv-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+
+.dv-card-desc {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-bottom: 6px;
+}
+
+.dv-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.dv-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.dv-watch-btn {
+  padding-inline: 14px;
+}
+
+/* Modal */
+.dv-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999 !important;
+}
+
+.dv-modal-inner {
+  width: 95%;
+  max-width: 520px;
+  background: #fffbeb;
+  border-radius: 22px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 24px 50px rgba(0,0,0,0.4);
+}
+
+.dv-modal-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 10px;
+}
+
+.dv-video-container {
+  margin-bottom: 10px;
+}
+
+.dv-video-container video.dv-video {
+  width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.dv-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hidden {
+  display: none !important;
+}
