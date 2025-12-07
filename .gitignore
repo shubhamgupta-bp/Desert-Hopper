@@ -3,3 +3,8 @@ node_modules/
 # Exclude object and binary files
 **/obj/
 **/bin/
+
+# Exclude db files
+*.db
+*.sqlite
+*.sqlite3
