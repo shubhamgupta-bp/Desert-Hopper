@@ -1,33 +1,61 @@
 using DesertHopper.Backend.Data;
 using DesertHopper.Backend.Models;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace DesertHopper.Backend.Services
 {
     public class GameService : IGameService
     {
-        private readonly InMemoryGameStore _store = new();
+        private readonly AppDbContext _db;
 
-        public IEnumerable<GameSave> ListAll()
+        public GameService(AppDbContext db)
         {
-            return _store.ListAll();
+            _db = db;
         }
 
-        public GameSave? GetByName(string name)
+        public GameSave? GetUserSave(int userId)
         {
-            return _store.GetByName(name);
+            return _db.GameSaves
+                      .AsNoTracking()
+                      .FirstOrDefault(s => s.UserId == userId);
         }
 
-        // Create OR update save
-        public GameSave Save(GameSave save)
+        public GameSave SaveOrUpdate(int userId, int coins, int obstaclesPassed)
         {
-            return _store.Save(save);
+            var existing = _db.GameSaves.FirstOrDefault(s => s.UserId == userId);
+
+            if (existing == null)
+            {
+                var save = new GameSave
+                {
+                    UserId = userId,
+                    Coins = coins,
+                    ObstaclesPassed = obstaclesPassed,
+                    SavedAt = DateTime.UtcNow
+                };
+
+                _db.GameSaves.Add(save);
+                _db.SaveChanges();
+                return save;
+            }
+            else
+            {
+                existing.Coins = coins;
+                existing.ObstaclesPassed = obstaclesPassed;
+                existing.SavedAt = DateTime.UtcNow;
+                _db.SaveChanges();
+                return existing;
+            }
         }
 
-        // Delete save
-        public bool Delete(string name)
+        public bool DeleteUserSave(int userId)
         {
-            return _store.Delete(name);
+            var existing = _db.GameSaves.FirstOrDefault(s => s.UserId == userId);
+            if (existing == null) return false;
+
+            _db.GameSaves.Remove(existing);
+            _db.SaveChanges();
+            return true;
         }
     }
 }

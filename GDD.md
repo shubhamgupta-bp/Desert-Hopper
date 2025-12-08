@@ -1,205 +1,165 @@
-# Desert Hopper – Game Design Document (GDD)
+# 🎮 Desert Hopper – Backend API Game Design Document (GDD)
 
-## 1. Game Overview
+## 1. Introduction
+This document describes the backend system for the Desert Hopper game, designed as a RESTful API using ASP.NET Core 8. The backend is responsible for secure user authentication, persistent storage of game data, and structured endpoints that the frontend game interacts with.
 
-**Desert Hopper** is a multi-page 2D browser runner game where players must survive for as long as possible by **jumping**, **ducking**, and **dodging** obstacles while running across a desert.  
-The game uses a **Node.js frontend**, **HTML5 Canvas**, and a **C# (.NET) backend** for Save/Load/Delete features.
-
-It is designed to be simple, responsive, visually appealing, and scalable.
+It fulfills all requirements of the **“Individual Project: Video Game Backend API”** module.
 
 ---
 
-## 2. Game Type
-- Genre: **Endless Runner / Dodger**
-- Platform: Web (Desktop)
-- Technology:
-  - HTML5 Canvas API
-  - JavaScript (game engine)
-  - Tone.js (sound)
-  - .NET API (game save system)
-  - TailwindCSS + Custom CSS (UI themes)
-  - Node.js development server (npm start)
+# 2. System Summary
+
+The backend provides:
+- JWT-secured authentication
+- SQLite database integration
+- CRUD operations for game progression
+- Data validation
+- Service-layer architecture
+- Entity Framework Core ORM
+- JSON-based responses
 
 ---
 
-## 3. Core Gameplay
-The player runs automatically across a side-scrolling desert.
+# 3. Core Entities
 
-### Main Objectives
-- Survive as long as possible.
-- Avoid all obstacles (collision = crash/game over).
-- Increase score (coins) by passing obstacles.
-- Maintain/session track:
-  - **Score (Coins)**
-  - **Obstacles Crossed**
-- Save progress with a chosen name.
-- Load previous saved games.
-- Update & overwrite existing saves.
-- Delete saves.
-- Restart quickly using *Play Again*.
+## 3.1 User
+Represents an authenticated player.
 
----
+Fields:
+- Id  
+- Username  
+- Email  
+- PasswordHash  
+- PasswordSalt  
+- CreatedAt  
 
-## 4. Controls
-| Action | Key |
-|--------|------|
-| Jump | Space / ↑ Arrow |
-| Duck | ↓ Arrow |
-| Start Game (from ready screen) | Space |
+## 3.2 GameSave
+Stores the game progress for one user.
 
----
+Fields:
+- Id  
+- UserId  
+- Coins  
+- ObstaclesPassed  
+- UpdatedAt  
 
-## 5. Game Entities
-
-### 5.1 Player
-- Rectangular character with:
-  - Position
-  - Height, width
-  - Velocity (vy), gravity
-  - Jumping state
-  - Ducking state
-- Physics:
-  - Gravity simulated frame-by-frame
-  - Jump reduces velocity upwards
-  - Duck reduces height temporarily
-
-### 5.2 Obstacles (6 Types)
-Each obstacle has:
-- x, y position
-- width, height
-- movement speed
-- special behavior
-- `counted` flag (for scoring)
-
-#### Types:
-1. **Cactus** – Basic vertical obstacle  
-2. **Rock** – Small ground obstacle  
-3. **Bird** – Mid-air obstacle with horizontal drift  
-4. **Log** – Long ground barrier  
-5. **Tumbleweed** – Rolling obstacle  
-6. **Glider** – Flying enemy with sine-wave motion  
-
-All obstacles appear randomly but follow logic to avoid overlapping.
+Relationship:  
+**1 User → 1 GameSave**
 
 ---
 
-## 6. Environment
-- Sand ground
-- Ground markings
-- Parallax clouds with random spawn intervals
-- Orange/sand desert theme (UI consistent on all pages)
+# 4. Backend Architecture
+
+### Layers:
+1. **Controllers**  
+   Handle HTTP traffic and request validation.
+
+2. **Services**  
+   Business logic (authentication, hashing, CRUD operations).
+
+3. **Data Layer**  
+   EF Core DbContext + Migrations.
+
+4. **Models/DTOs**  
+   Strong typing for request/response structures.
 
 ---
 
-## 7. Game Mechanics / Algorithms
+# 5. API Design
 
-### 7.1 Physics
-- Gravity: gradual acceleration on jump
-- Ducking: reduces height only when grounded
+## Authentication
+Endpoints:
+- Register  
+- Login  
+- Delete Account  
 
-### 7.2 Collision Detection
-- AABB (Axis-Aligned Bounding Box)
-- If player rectangle intersects obstacle rectangle → crash
+### Features:
+- Password hashing with HMACSHA512  
+- JWT tokens  
+- Token expiry  
+- Protection via `[Authorize]`
 
-### 7.3 Procedural Obstacle Generation
-- Randomized interval (`45–150 frames`)
-- Random selection of obstacle types
-- Gliders use:
-  ```js
-  y = initialY + sin(waveTime) * amplitude
+---
 
-### 7.4 Score Logic
-- When obstacle crosses the player (x + width < player.x)
-- Increase: score and sessionObstacles
+## Game Save Management
 
-### 7.5 Speed Scaling
-- gameSpeed += 0.0015 each frame
-- Speed increases difficulty steadily
+Endpoints:
+- Get latest save  
+- Save (create/update)
 
-## 8. System Architecture
+Flow:
+1. When a user registers, a default save (0 coins, 0 obstacles) is created.
+2. Frontend calls `/games/save` whenever player updates progress.
+3. Backend always overwrites old save for that user.
 
-### 8.1 Frontend (Browser)
+---
 
-- Pages:
-    - index.html → Main Menu
-    - play.html → Canvas Game
-    - load.html → Saved games list
-    - save.html → Save game naming
-    - delete.html → Delete game UI
-    - howto.html → Instructions
+# 6. Database Schema
 
-- Scripts:
-    - ui.js → Navigation, Save/Load/Delete logic
-    - game.js → Entire game engine and animation loop
+Tables:
+- Users  
+- GameSaves  
 
-### 8.2 Backend (C# .NET API)
+Constraints:
+- FK(UserId)  
+- Unique email & username (case-insensitive)  
 
-- Endpoints:
-    - GET /api/games → List all saves
-    - GET /api/games/{name} → Load save
-    - POST /api/games/save → Create/update save
-    - DELETE /api/games/{name} → Delete save
+---
 
-- Storage:
-    - InMemoryGameStore (Dictionary<string, GameSave>)
+# 7. Security Considerations
 
-## 9. User Interface (UI)
+- No plaintext passwords  
+- Strong hashing algorithm  
+- JWT signature validation  
+- Expiry enforcement  
+- Authorization middleware  
+- Input validation  
 
-### Theme:
+---
 
-- Orange + Sand desert palette
-- Rounded cards
-- Large menu buttons
-- Responsive layout for both main menu & pages
-- Clean right-side game HUD:
-- Saved Game Name
-- Coins (Score)
-- Obstacles Crossed
-- Basic controls
+# 8. Learning Outcomes Demonstrated
 
-## 10. Game Flow
+This backend demonstrates:
 
-### Main Menu
+### ✔ Understanding Databases  
+SQLite schema, relational relationships, migrations.
 
-* **Start New Game** $\rightarrow$ `play.html`
-* **Load Game** $\rightarrow$ `load.html` (Choose Save) $\rightarrow$ `play.html`
-* **Save Game** $\rightarrow$ `save.html` (Provide Name) $\rightarrow$ `index.html` (Return to Main Menu)
-* **Delete Saves** $\rightarrow$ `delete.html`
-* **How To Play** $\rightarrow$ `howto.html`
+### ✔ Entity Framework  
+DbContext, LINQ, queries, async DB operations.
 
-### In Gameplay
+### ✔ CRUD Operations  
+Create / Read / Update / Delete via REST endpoints.
 
-* **Ready Screen** $\rightarrow$ Play
-* **Run** $\rightarrow$ Survive
-* **Crash** $\rightarrow$ Crash Panel:
-    * Play Again
-    * Save Game
-    * Back to Main Menu
+### ✔ JSON Serialization  
+Controllers return structured JSON.
 
-### Saving Logic
+### ✔ Routing and API Design  
+REST principles applied consistently.
 
-* Save creates/updates save
-* Save always writes latest score
-* Load always fetches from backend (no stale values)
+### ✔ Authentication Basics  
+JWT generation & validation.
 
-## 11. Testing Overview
+### ✔ Securing Endpoints  
+Authorize attributes & middleware.
 
-### All components tested:
+### ✔ Error Handling  
+HTTP status codes, validation messages.
 
-- Player controls
-- Collision system
-- Spawning logic
-- Difficulty scaling
-- Save/Load/Delete APIs
-- Play Again logic
-- Multi-page routing
-- UI behavior across all pages
+---
 
-## 12. Future Enhancements
+# 9. Suggested Features Completed
+- User registration  
+- User login  
+- Protected endpoints  
+- Game entity management  
+- Error handling  
+- Data validation  
+- Automatic save loading  
 
-- Character skins
-- Power-ups (shield, slow motion)
-- Boss birds / flying enemies
-- Mobile/Touch controls
-- Cloud save system
-- Animations (sprite sheet)
+*Optional items included:*  
+- Swagger documentation  
+
+---
+
+# 10. Conclusion
+The Desert Hopper Backend API is a robust, secure, and scalable server suitable for modern game applications. It follows good architectural practices and fulfills all academic project requirements for a game-oriented backend system.

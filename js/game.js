@@ -1,25 +1,21 @@
 // =========================
-//  DESERT HOPPER GAME ENGINE — FINAL FULL VERSION
+//  DESERT HOPPER GAME ENGINE
 // =========================
 
-// ----- Canvas Setup -----
+// Canvas
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// ----- UI Elements -----
-const savedNameEl = document.getElementById("saved-name");
-const coinCountEl = document.getElementById("coin-count");
+const API_GAMES = "http://localhost:5000/api/games";
 
+// UI elements
 const crashMenuEl = document.getElementById("crash-menu");
 const crashScoreEl = document.getElementById("crash-score");
 
-const API_BASE = "http://localhost:5000/api/games";
+const coinCountSidebar = document.getElementById("sidebar-coins");
+const obstaclesSidebar = document.getElementById("sidebar-obstacles");
 
-// ----- Gameplay State -----
-let loadedGameName = localStorage.getItem("loadedGame");
-let saveQueuedName = localStorage.getItem("saveQueuedName");
-let currentGameName = null;
-
+// State
 let gameActive = false;
 let score = 0;
 let sessionObstacles = 0;
@@ -33,7 +29,7 @@ let clouds = [];
 let timeSinceLastObstacle = 0;
 let obstacleGenerationInterval = 80;
 
-// ----- Player -----
+// Player physics
 const GRAVITY = 0.5;
 
 const player = {
@@ -49,15 +45,14 @@ const player = {
   duckHeight: 20
 };
 
-const keys = { up: false, down: false, space: false };
+const keys = { down: false };
 
 // =========================
-//  CANVAS RESIZING
+//  Canvas Resize
 // =========================
 function resizeCanvas() {
   const container = document.querySelector(".game-card") || document.body;
   const w = container ? Math.min(900, container.clientWidth - 40) : 900;
-
   canvas.width = w;
   canvas.height = 200;
 
@@ -67,7 +62,7 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 
 // =========================
-//  SOUND (TONE.JS)
+//  Sound (Tone.js)
 // =========================
 const jumpSynth = new Tone.Synth({
   oscillator: { type: "triangle" },
@@ -90,7 +85,7 @@ async function playCrashSound() {
 }
 
 // =========================
-//  START GAME
+//  Start Game
 // =========================
 function initGame() {
   if (Tone.context.state !== "running") {
@@ -109,19 +104,13 @@ function initGame() {
   frameCount = 0;
   timeSinceLastObstacle = 0;
   sessionObstacles = 0;
-  
-  // Reset score ONLY for a new game, not for loaded games
-  if (!currentGameName) {
-    score = 0;
-  }
 
   gameActive = true;
-
   requestAnimationFrame(gameLoop);
 }
 
 // =========================
-//  GAME LOOP
+//  Game Loop
 // =========================
 function gameLoop() {
   if (!gameActive) return;
@@ -131,12 +120,12 @@ function gameLoop() {
 }
 
 // =========================
-//  UPDATE LOGIC
+//  Update
 // =========================
 function update() {
   frameCount++;
 
-  // Player jump physics
+  // Player physics
   if (player.isJumping) {
     player.vy += GRAVITY;
     player.y += player.vy;
@@ -168,7 +157,6 @@ function update() {
     o.x -= gameSpeed;
 
     if (o.type === "bird" && o.dx) o.x += o.dx;
-
     if (o.type === "glider") {
       o.x += o.dx;
       o.waveTime += 0.05;
@@ -179,7 +167,7 @@ function update() {
       score++;
       sessionObstacles++;
       o.counted = true;
-      updateTopBar();
+      updateHud();
     }
   });
 
@@ -194,12 +182,12 @@ function update() {
 }
 
 // =========================
-//  DRAW LOGIC
+//  Draw
 // =========================
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Background sky
+  // Sky
   ctx.fillStyle = "#e0f2f7";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -234,16 +222,14 @@ function draw() {
   ctx.font = "bold 18px Inter";
   ctx.fillStyle = "#555";
   ctx.textAlign = "right";
-
   ctx.fillText(`Obstacles ${String(sessionObstacles).padStart(3, "0")}`, canvas.width - 180, 30);
   ctx.fillText(`Coins ${String(score).padStart(3, "0")}`, canvas.width - 20, 30);
-
   ctx.textAlign = "left";
   ctx.fillText(`SPEED ${String(Math.floor(gameSpeed * 10)).padStart(3, "0")}`, 20, 30);
 }
 
 // =========================
-//  COLLISION DETECTION
+//  Collision
 // =========================
 function checkCollisions() {
   for (const o of obstacles) {
@@ -260,20 +246,18 @@ function checkCollisions() {
 }
 
 // =========================
-//  END GAME
+//  End Game
 // =========================
 function endGame() {
   gameActive = false;
   playCrashSound();
-
   draw();
-
   if (crashScoreEl) crashScoreEl.textContent = score;
   if (crashMenuEl) crashMenuEl.classList.remove("hidden");
 }
 
 // =========================
-//  INPUT HANDLERS
+//  Input
 // =========================
 function attemptJump() {
   if (!player.isJumping && !keys.down) {
@@ -283,15 +267,11 @@ function attemptJump() {
   }
 }
 
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", e => {
   if (e.key === " " || e.key === "ArrowUp") {
     e.preventDefault();
-
     const startPanel = document.getElementById("start-panel");
-    if (startPanel && !startPanel.classList.contains("hidden")) {
-      return;
-    }
-
+    if (startPanel && !startPanel.classList.contains("hidden")) return;
     if (!gameActive) initGame();
     else attemptJump();
   }
@@ -299,12 +279,12 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown") keys.down = true;
 });
 
-document.addEventListener("keyup", (e) => {
+document.addEventListener("keyup", e => {
   if (e.key === "ArrowDown") keys.down = false;
 });
 
 // =========================
-//  OBSTACLE CREATION
+//  Obstacle Generation
 // =========================
 function createSingleObstacle(type) {
   let width, height, yPos, dx = 0, amplitude = 0, initialY = 0;
@@ -313,29 +293,24 @@ function createSingleObstacle(type) {
     width = 15 + Math.random() * 15;
     height = 35 + Math.random() * 15;
     yPos = GROUND_Y - height;
-
   } else if (type === "rock") {
     width = 10 + Math.random() * 10;
     height = 10 + Math.random() * 10;
     yPos = GROUND_Y - height;
-
   } else if (type === "bird") {
     width = 30;
     height = 15;
     yPos = GROUND_Y - (Math.random() < 0.5 ? 70 : 100);
     dx = 0.5 + Math.random() * 0.3;
-
   } else if (type === "tumbleweed") {
     width = 12 + Math.random() * 8;
     height = 12 + Math.random() * 8;
     yPos = GROUND_Y - height;
     dx = -1;
-
   } else if (type === "log") {
     width = 40 + Math.random() * 20;
     height = 10;
     yPos = GROUND_Y - height;
-
   } else if (type === "glider") {
     width = 40;
     height = 20;
@@ -361,11 +336,9 @@ function createSingleObstacle(type) {
 
 function generateObstacle() {
   timeSinceLastObstacle++;
-
   if (timeSinceLastObstacle > obstacleGenerationInterval) {
     const r = Math.random();
     let type;
-
     if (r < 0.20) type = "cactus";
     else if (r < 0.35) type = "bird";
     else if (r < 0.50) type = "rock";
@@ -380,7 +353,7 @@ function generateObstacle() {
 }
 
 // =========================
-//  CLOUDS
+//  Clouds
 // =========================
 function updateClouds() {
   clouds.forEach(c => c.x -= gameSpeed * 0.15);
@@ -396,7 +369,6 @@ function updateClouds() {
 
 function drawClouds() {
   ctx.fillStyle = "rgba(255,255,255,0.9)";
-
   clouds.forEach(c => {
     ctx.beginPath();
     ctx.arc(c.x, c.y, 10, 0, Math.PI * 2);
@@ -408,7 +380,7 @@ function drawClouds() {
 }
 
 // =========================
-//  DRAW PLAYER
+//  Player Drawing (same Dino)
 // =========================
 function drawPlayer() {
   const px = player.x;
@@ -417,7 +389,6 @@ function drawPlayer() {
   const ph = player.height;
 
   ctx.fillStyle = gameActive ? "#3d3d3d" : "#8c8c8c";
-
   ctx.beginPath();
 
   if (player.isDucking) {
@@ -442,7 +413,7 @@ function drawPlayer() {
         ctx.lineTo(px + pw * 0.2, py + ph);
       }
     } else {
-        ctx.lineTo(px + pw, py + ph);
+      ctx.lineTo(px + pw, py + ph);
     }
 
     ctx.lineTo(px, py + ph);
@@ -455,7 +426,7 @@ function drawPlayer() {
 }
 
 // =========================
-//  DRAW OBSTACLES
+//  Obstacle Drawing
 // =========================
 function drawCactus(x, y, w, h) {
   ctx.fillStyle = "#10B981";
@@ -544,151 +515,69 @@ function drawGlider(x, y, w, h) {
 }
 
 // =========================
-//  SAVE GAME (CREATE OR UPDATE)
+//  HUD
 // =========================
-async function saveGameWithName(name) {
-  const payload = {
-    name,
-    coins: score,
-    obstaclesPassed: score
-  };
+function updateHud() {
+  if (coinCountSidebar) coinCountSidebar.textContent = score;
+  if (obstaclesSidebar) obstaclesSidebar.textContent = sessionObstacles;
+}
 
+// =========================
+//  Saving & Auto-load
+// =========================
+async function loadExistingSave() {
   try {
-    const res = await fetch(`${API_BASE}/save`, {
+    const res = await authFetch(`${API_GAMES}/latest`);
+    if (!res.ok) {
+      score = 0;
+      updateHud();
+      return;
+    }
+    const data = await res.json();
+    score = data.coins || 0;
+    updateHud();
+  } catch {
+    score = 0;
+    updateHud();
+  }
+}
+
+async function saveToBackend() {
+  try {
+    await authFetch(`${API_GAMES}/save`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        coins: score,
+        obstaclesPassed: sessionObstacles
+      })
     });
-
-    if (!res.ok) throw new Error("Save failed");
-
-    const saved = await res.json();
-    currentGameName = saved.name;
-
-    localStorage.setItem("lastSavedName", saved.name);
-    localStorage.setItem("lastSavedCoins", score);
-
-    // Update loadedGame/loadedCoins so subsequent loads use latest backend value
-    localStorage.setItem("loadedGame", saved.name);
-    localStorage.setItem("loadedCoins", score);
-
-  } catch (e) {
-    console.error("Save error:", e);
+  } catch {
+    // ignore for now
   }
 }
 
 // =========================
-//  UPDATE TOP BAR
-// =========================
-function updateTopBar() {
-  if (coinCountEl) coinCountEl.textContent = score;
-  const sidebarCoins = document.getElementById("sidebar-coins");
-  if (sidebarCoins) sidebarCoins.textContent = score;
-  const sidebarObstacles = document.getElementById("sidebar-obstacles");
-  if (sidebarObstacles) sidebarObstacles.textContent = sessionObstacles;
-}
-
-// =========================
-//  PAGE LOAD LOGIC
+//  Window Load
 // =========================
 window.onload = async function () {
-  // ensure canvas size + initial draw
   resizeCanvas();
   draw();
 
-  // 1) If Play Again was clicked -> start immediately (skip READY panel)
+  // Auto-load existing save
+  await loadExistingSave();
+
+  // Play Again flow
   if (localStorage.getItem("playAgain") === "1") {
     localStorage.removeItem("playAgain");
-
-    // If a loaded game exists in storage, restore it first (but prefer backend)
-    const lg = localStorage.getItem("loadedGame");
-    if (lg) {
-      try {
-        const res = await fetch(`${API_BASE}/${lg}`);
-        if (res.ok) {
-          const data = await res.json();
-          currentGameName = data.name;
-          score = data.coins;
-          updateTopBar();
-        }
-      } catch (e) {
-        console.error("Play Again load fail:", e);
-      }
-    }
-
     const startPanel = document.getElementById("start-panel");
     if (startPanel) startPanel.classList.add("hidden");
-
-    // reset session obstacle counter
-    sessionObstacles = 0;
-
     initGame();
-    return;
   }
-
-  // 2) If returning from Save page -> commit the queued save BEFORE any restore
-  const saveQueuedName = localStorage.getItem("saveQueuedName");
-  if (saveQueuedName) {
-    // Determine coins to save. Prefer explicit saveQueuedCoins, fallback to pendingScore, else current score
-    const savedCoins = Number(localStorage.getItem("saveQueuedCoins"));
-    const fallbackPending = Number(localStorage.getItem("pendingScore"));
-    const coinsToUse = Number.isFinite(savedCoins) && !isNaN(savedCoins) ? savedCoins :
-                       (Number.isFinite(fallbackPending) && !isNaN(fallbackPending) ? fallbackPending : score);
-
-    score = coinsToUse;
-
-    try {
-      await saveGameWithName(saveQueuedName);
-    } catch (e) {
-      console.error("Save failed in onload:", e);
-      alert("Save failed. Please try again.");
-    }
-
-    // Clear temporary save flags
-    localStorage.removeItem("saveQueuedName");
-    localStorage.removeItem("saveQueuedCoins");
-    localStorage.removeItem("pendingScore");
-
-    alert(`Saved "${saveQueuedName}" successfully.`);
-    window.location.href = "../index.html";
-    return;
-  }
-
-  // 3) If not saving right now, restore loaded game state (if any)
-  if (localStorage.getItem("loadedGame")) {
-    const lg = localStorage.getItem("loadedGame");
-    try {
-      const res = await fetch(`${API_BASE}/${lg}`);
-      if (res.ok) {
-        const data = await res.json();
-        currentGameName = data.name;
-        score = data.coins;
-
-        updateTopBar();
-
-        const sidebarSaved = document.getElementById("sidebar-saved");
-        if (sidebarSaved) sidebarSaved.textContent = currentGameName;
-        if (savedNameEl) savedNameEl.textContent = currentGameName;
-        if (document.getElementById("panel-saved"))
-          document.getElementById("panel-saved").textContent = currentGameName;
-        if (document.getElementById("panel-coins"))
-          document.getElementById("panel-coins").textContent = score;
-      }
-    } catch (e) {
-      console.error("Load error:", e);
-    }
-    return;
-  }
-
-  // 4) NEW (no loaded game, not saving) -> reset
-  score = 0;
-  updateTopBar();
 };
 
-// =========================
-//  PLAY AGAIN
-// =========================
-function playAgain() {
-  localStorage.setItem("playAgain", "1");
-  window.location.href = "play.html";
-}
+// Before redirecting to save page (from ui.goToSavePage)
+// we store current progress into localStorage, which save.html uses
+window.addEventListener("beforeunload", () => {
+  localStorage.setItem("pendingScore", String(score));
+  localStorage.setItem("pendingObstacles", String(sessionObstacles));
+});

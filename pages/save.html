@@ -2,33 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Save Game</title>
+  <title>Desert Hopper — Save Game</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 
 <body class="page-bg">
-
   <div class="page-shell">
     <header>
       <button class="back-link" onclick="goTo('../index.html')">← Back</button>
       <h2 class="page-title">Save Game</h2>
     </header>
 
-    <section class="form-shell">
-      <label class="label">Save Name</label>
-      <input id="save-name" class="input" placeholder="Enter a name..." />
-
-      <button class="btn warn" onclick="saveGameName()">Save</button>
+    <section>
+      <p style="margin-bottom:0.7rem; color:#4b5563;">
+        Save your current progress (coins and obstacles) to your account.
+      </p>
+      <button class="btn warn" onclick="saveCurrentProgress()">Save Current Progress</button>
+      <div id="save-status" class="error-text" style="margin-top:0.5rem;"></div>
     </section>
 
-    <footer style="margin-top: 20px;">
+    <footer style="margin-top: 1.5rem;">
       <button class="btn neutral" onclick="goTo('../index.html')">Back to Main Menu</button>
     </footer>
   </div>
 
   <script src="../js/ui.js"></script>
-
+  <script>
+    ensureAuthenticatedInPages();
+  </script>
 </body>
 </html>

@@ -3,3 +3,11 @@ node_modules/
 # Exclude object and binary files
 **/obj/
 **/bin/
+
+# Exclude db files
+*.db
+*.sqlite
+*.sqlite3
+
+# Hardcoding the db file from Backend folder
+./Backend/deserthopper.db

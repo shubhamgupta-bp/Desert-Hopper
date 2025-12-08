@@ -9,25 +9,25 @@
 </head>
 
 <body class="page-bg">
-
   <main class="center-stage">
     <div class="brand-card">
-      <h1 class="brand-title">DESERT HOPPER</h1>
-      <p class="brand-sub">Run through the dunes. Dodge. Survive.</p>
-    </div>
+      <h1 class="brand-title">DESERT HOPPER DINO</h1>
+      <p class="brand-sub">Run, jump, and dodge through the dunes.</p>
 
-    <div class="menu-grid">
-      <button class="btn primary" onclick="goTo('play.html')">Start New Game</button>
-      <button class="btn accent" onclick="goTo('load.html')">Load Game</button>
-      <button class="btn warn" onclick="goTo('save.html')">Save Game</button>
-      <button class="btn danger" onclick="goTo('delete.html')">Delete Game</button>
-      <button class="btn neutral" onclick="goTo('howto.html')">How To Play</button>
+      <div class="menu-grid">
+        <button class="btn primary" onclick="goTo('play.html')">Play Game</button>
+        <button class="btn accent" onclick="goTo('vlogs.html')">🎥 Dino Vlogs</button>
+        <button class="btn warn" onclick="goTo('save.html')">Save Game</button>
+        <button class="btn danger" onclick="goTo('delete.html')">Delete Account</button>
+        <button class="btn neutral" onclick="goTo('howto.html')">How To Play</button>
+        <button class="btn neutral" onclick="logout()">Logout</button>
+      </div>
     </div>
 
     <aside class="side-info">
       <div class="info-block">
-        <h4>Last Saved</h4>
-        <div id="menu-save-name">(none)</div>
+        <h4>User</h4>
+        <div id="menu-username">-</div>
       </div>
       <div class="info-block">
         <h4>Coins</h4>
@@ -38,11 +38,9 @@
 
   <script src="js/ui.js"></script>
   <script>
-    const saved = localStorage.getItem("lastSavedName");
-    const coins = localStorage.getItem("lastSavedCoins");
-    if (saved) document.getElementById("menu-save-name").textContent = saved;
-    if (coins) document.getElementById("menu-coins").textContent = coins;
-  </script>
+    ensureAuthenticatedAtRoot();
 
+    loadUserProfileAndCoins();
+  </script>
 </body>
 </html>
